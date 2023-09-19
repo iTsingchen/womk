@@ -10,11 +10,6 @@
     "test": "turbo run test",
     "typecheck": "turbo run typecheck"
   },
-  "config": {
-    "commitizen": {
-      "path": "cz-git"
-    }
-  },
   "devDependencies": {
     "@commitlint/cli": "^17.7.1",
     "@commitlint/config-conventional": "^17.7.0",
