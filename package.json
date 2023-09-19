@@ -1,17 +1,33 @@
 {
+  "name": "wmk",
   "private": true,
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "prepare": "husky install",
+    "test": "turbo run test",
+    "typecheck": "turbo run typecheck"
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-git"
+    }
   },
   "devDependencies": {
+    "@commitlint/cli": "^17.7.1",
+    "@commitlint/config-conventional": "^17.7.0",
+    "@commitlint/cz-commitlint": "^17.7.1",
+    "@wmk/tsconfig": "workspace:*",
+    "commitizen": "^4.3.0",
+    "cz-git": "^1.7.1",
     "eslint": "^8.48.0",
+    "husky": "^8.0.0",
+    "lint-staged": "^14.0.1",
     "prettier": "^3.0.3",
-    "tsconfig": "workspace:*",
-    "turbo": "latest"
+    "turbo": "latest",
+    "typescript": "^5.2.2"
   },
-  "packageManager": "pnpm@8.6.10",
-  "name": "wmk"
+  "packageManager": "pnpm@8.6.10"
 }

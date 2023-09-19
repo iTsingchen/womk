@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "React Library",
+
+  "extends": "./tsconfig.vanilla.json",
+  "compilerOptions": {
+    "target": "es6",
+    "jsx": "react-jsx"
+  }
+}
