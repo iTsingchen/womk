@@ -1,0 +1,6 @@
+{
+  "extends": "@wmk/tsconfig/tsconfig.vanilla.json",
+
+  "include": ["src"],
+  "references": [{ "path": "./tsconfig.node.json" }]
+}

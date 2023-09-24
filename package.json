@@ -7,6 +7,7 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "lint": "turbo run lint",
     "prepare": "husky install",
+    "publish-packages": "turbo run build lint test && changeset version && changeset publish",
     "test": "turbo run test",
     "typecheck": "turbo run typecheck"
   },
@@ -15,6 +16,7 @@
     "@commitlint/config-conventional": "^17.7.0",
     "@commitlint/cz-commitlint": "^17.7.1",
     "@wmk/tsconfig": "workspace:*",
+    "changeset": "^0.2.6",
     "commitizen": "^4.3.0",
     "cz-git": "^1.7.1",
     "eslint": "^8.48.0",

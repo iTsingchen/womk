@@ -1,4 +1,3 @@
 {
-  "extends": "@wmk/tsconfig/tsconfig.vanilla.json",
-  "include": [".commmitlintrc.cjs"]
+  "extends": "@wmk/tsconfig/tsconfig.vanilla.json"
 }
