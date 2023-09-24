@@ -15,7 +15,7 @@
     "build": "tsup src/index.ts --format cjs,esm --dts",
     "coverage": "vitest --coverage",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "test": "vitest"
+    "test": "vitest run"
   },
   "devDependencies": {
     "@testing-library/react": "^14.0.0",
