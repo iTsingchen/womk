@@ -11,6 +11,11 @@
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
+  "files": [
+    "README.md",
+    "dist/**/*",
+    "src/**/*"
+  ],
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts",
     "coverage": "vitest --coverage",
@@ -30,5 +35,8 @@
   },
   "peerDependencies": {
     "react": "^18.2.0"
+  },
+  "publishConfig": {
+    "@wmk/registry": "https://npm.pkg.github.com"
   }
 }

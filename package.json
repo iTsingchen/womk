@@ -7,7 +7,7 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "lint": "turbo run lint",
     "prepare": "husky install",
-    "publish-packages": "turbo run build lint test && changeset version && changeset publish",
+    "publish-packages": "turbo run build && changeset version && changeset publish",
     "test": "turbo run test",
     "typecheck": "turbo run typecheck"
   },
