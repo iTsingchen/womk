@@ -6,7 +6,7 @@
     "dev": "turbo run dev",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "lint": "turbo run lint",
-    "prepare": "husky install",
+    "prepare": "is-ci || husky install",
     "test": "turbo run test",
     "typecheck": "turbo run typecheck"
   },
@@ -20,6 +20,7 @@
     "cz-git": "^1.7.1",
     "eslint": "^8.48.0",
     "husky": "^8.0.0",
+    "is-ci": "^3.0.1",
     "lint-staged": "^14.0.1",
     "prettier": "^3.0.3",
     "turbo": "latest",
