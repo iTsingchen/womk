@@ -1,16 +1,25 @@
 {
-  "name": "@wmk/react-hooks",
+  "name": "@womk/react-hooks",
   "version": "0.0.1",
   "description": "",
   "keywords": [
     "react",
     "react-hooks"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iTsingchen/womk.git"
+  },
   "license": "MIT",
   "author": "iTsingchen",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
+  "files": [
+    "README.md",
+    "dist/**/*",
+    "src/**/*"
+  ],
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts",
     "coverage": "vitest --coverage",
@@ -21,8 +30,8 @@
     "@testing-library/react": "^14.0.0",
     "@types/react": "^18.2.22",
     "@vitest/coverage-v8": "^0.34.5",
-    "@wmk/eslint-config": "workspace:*",
-    "@wmk/tsconfig": "workspace:*",
+    "@womk/eslint-config": "workspace:*",
+    "@womk/tsconfig": "workspace:*",
     "jsdom": "^22.1.0",
     "react": "^18.2.0",
     "tsup": "^7.2.0",
@@ -30,5 +39,8 @@
   },
   "peerDependencies": {
     "react": "^18.2.0"
+  },
+  "publishConfig": {
+    "@womk:registry": "https://registry.npmjs.org"
   }
 }

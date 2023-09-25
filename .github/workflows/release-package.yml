@@ -1,0 +1,54 @@
+name: Release
+on:
+  push:
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+env:
+  CI: true
+
+jobs:
+  publish:
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+    steps:
+      - name: checkout code repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - uses: pnpm/action-setup@v2.4.0
+        with:
+          version: latest
+
+      - name: setup node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          registry-url: 'https:///registry.npmjs.org'
+          scope: '@womk'
+
+      - name: setup npmrc
+        run: |
+          echo "" >> .npmrc
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> .npmrc
+
+      - name: run cat
+        run: cat .npmrc
+
+      - name: install dependencies
+        run: pnpm install
+
+      - name: build
+        run: pnpm build
+
+      - name: create and publish versions
+        uses: changesets/action@v1
+        with:
+          version: pnpm changeset version
+          commit: 'chore: update versions'
+          title: 'chore: update versions'
+          publish: pnpm publish -r --no-git-checks
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
