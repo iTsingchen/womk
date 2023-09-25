@@ -1,14 +1,17 @@
 name: Release
-
 on:
-  release:
-    types: [created]
+  push:
+    branches:
+      - main
+env:
+  CI: true
 
 jobs:
-  build:
+  version:
+    timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
-      - name: Check out code
+      - name: checkout code repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 2
@@ -17,48 +20,23 @@ jobs:
         with:
           version: latest
 
-      - name: Setup Node.js environment
+      - name: setup node.js
         uses: actions/setup-node@v3
         with:
           node-version: 20
-          cache: 'pnpm'
 
-      - name: Install dependencies
+      - name: Setup npmrc
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
+
+      - name: install dependencies
         run: pnpm install
 
-      - name: Typecheck
-        run: pnpm typecheck
-
-      - name: Test
-        run: pnpm test
-
-  publish-gpr:
-    needs: build
-    runs-on: ubuntu-latest
-    permissions:
-      packages: write
-      contents: read
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v4
+      - name: create and publish versions
+        uses: changesets/action@v1
         with:
-          fetch-depth: 2
-
-      - uses: pnpm/action-setup@v2.4.0
-        with:
-          version: latest
-
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v3
-        with:
-          node-version: 20
-          cache: 'pnpm'
-          registry-url: https://npm.pkg.github.com/
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Publish
-      - run: pnpm publish-packages
+          version: pnpm ci:version
+          commit: 'chore: update versions'
+          title: 'chore: update versions'
+          publish: pnpm publish -r
         env:
-          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
