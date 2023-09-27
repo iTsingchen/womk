@@ -11,6 +11,8 @@ jobs:
     name: Build and Test
     timeout-minutes: 15
     runs-on: ubuntu-latest
+    environment:
+      name: development
     # To use Remote Caching, uncomment the next lines and follow the steps below.
     # env:
     #  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
@@ -43,3 +45,11 @@ jobs:
 
       - name: Test
         run: pnpm test
+
+      - name: Coverage
+        run: pnpm coverage
+
+        - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
