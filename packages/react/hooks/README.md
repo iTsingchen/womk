@@ -1,4 +1,18 @@
-# React hooks
+# userBusiness
+
+## 介绍
+
+随着React Hooks 的发布，React 16.8 版本正式成为 React 核心库的一部分。React Hooks 允许函数式组件使用 React 状态逻辑，并且可以在不编写类的情况下使用 React 组件，众多的状态库也开始支持 Hooks。
+
+目前的状态管理大概分为三种：
+
+1. 外部状态管理库，例如：`Redux`、`Valtio`、`Recoil`，其同时提供了状态管理、状态绑定、状态订阅等功能。
+2. 完全基于 React Hooks 实现的状态管理，其本身既提供了状态管理，又提供了状态绑定、状态订阅等功能。
+3. 将现有成熟的状态管理与 React 结合，提供状态绑定、状态订阅等功能。例如：`observable-hooks`。
+
+`observable-hooks` 连接了 `Observable World` 与 `Normal World`，而 `userBusiness` 与 `useObservable` 类似，将 `Business World` 与 `Normal World` 连接起来。
+
+相对于 `useObservable` 的使用，`userBusiness` 更加的简单，因为 `observable-hooks` 使用 `rxjs` , 而 ` rxjs` 本身就具有很陡的学习曲线，所以较难上手。`userBusiness` 则通过事件驱动来，相对来说更加简单,可以更快速上手。
 
 ## 核心概念
 
@@ -27,8 +41,6 @@
   +--------------------------------+
 
 ```
-
-这两个世界仅是概念上的区分。业务世界是指纯业务逻辑存放的地方。视图世界是指纯视图世界。需要一个纽带将两者连接起来，这就是 useBusiness 存在的意义，其优点像是 react-redux，但是更加灵活，不局限于业务世界的实现方式。
 
 ## 安装
 
