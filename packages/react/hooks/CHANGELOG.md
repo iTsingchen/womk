@@ -1,5 +1,11 @@
 # @womk/react-hooks
 
+## 0.0.4
+
+### Patch Changes
+
+- 299fb42: Update docs
+
 ## 0.0.3
 
 ### Patch Changes
