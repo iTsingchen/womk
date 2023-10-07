@@ -156,3 +156,19 @@ export const App = () => {
 ```
 
 Example: https://stackblitz.com/edit/react-ts-sjnpp3?file=app.tsx
+
+## API
+
+### `useBusiness<R, A>(business: Business, events: Array<string>, getState: (business: Business, args: A) => R, args?: A)`
+
+### 参数
+
+- business: 业务逻辑
+- events: 事件列表
+- getState: 获取状态
+- args: 可选的依赖参数列表，如果传入将会作为 getState 的第二个参数传入，args 的变化也会导致
+  getState 的重新执行
+
+### 返回值
+
+返回值为 getState 的结果，每当 events 中的事件触发时，getState 会被调用，返回值会被更新。

@@ -8,7 +8,8 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/iTsingchen/womk.git"
+    "url": "git+https://github.com/iTsingchen/womk.git",
+    "directory": "packages/react/hooks"
   },
   "license": "MIT",
   "author": "iTsingchen",
