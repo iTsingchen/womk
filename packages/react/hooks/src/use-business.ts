@@ -1,41 +1,6 @@
 import { useMemo, useSyncExternalStore, useCallback, useRef } from 'react';
+import { deepEqual } from 'fast-equals';
 import { usePreviousDistinct } from './use-previous-distinct';
-
-const deepEqual = (a: unknown, b: unknown): boolean => {
-  if (a === b) {
-    return true;
-  }
-
-  if (
-    typeof a !== 'object' ||
-    typeof b !== 'object' ||
-    a === null ||
-    b === null
-  ) {
-    return false;
-  }
-
-  const keysA = Object.keys(a);
-  const keysB = Object.keys(b);
-
-  if (keysA.length !== keysB.length) {
-    return false;
-  }
-
-  for (const key of keysA) {
-    if (!keysB.includes(key)) {
-      return false;
-    }
-
-    const valA = (a as Record<string, unknown>)[key];
-    const valB = (b as Record<string, unknown>)[key];
-    if (!deepEqual(valA, valB)) {
-      return false;
-    }
-  }
-
-  return true;
-};
 
 interface EventEmitter {
   on: (type: string, listener: () => void) => void;
