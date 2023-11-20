@@ -1,4 +1,4 @@
-# userBusiness
+# useBusinessState
 
 ## 介绍
 
@@ -10,9 +10,9 @@
 2. 完全基于 React Hooks 实现的状态管理，其本身既提供了状态管理，又提供了状态绑定、状态订阅等功能。
 3. 将现有成熟的状态管理与 React 结合，提供状态绑定、状态订阅等功能。例如：`observable-hooks`。
 
-`observable-hooks` 连接了 `Observable World` 与 `Normal World`，而 `userBusiness` 与 `useObservable` 类似，将 `Business World` 与 `Normal World` 连接起来。
+`observable-hooks` 连接了 `Observable World` 与 `Normal World`，而 `useBusinessState` 与 `useObservable` 类似，将 `Business World` 与 `Normal World` 连接起来。
 
-相对于 `useObservable` 的使用，`userBusiness` 更加的简单，因为 `observable-hooks` 使用 `rxjs` , 而 ` rxjs` 本身就具有很陡的学习曲线，所以较难上手。`userBusiness` 则通过事件驱动来，相对来说更加简单,可以更快速上手。
+相对于 `useObservable` 的使用，`useBusinessState` 更加的简单，因为 `observable-hooks` 使用 `rxjs` , 而 ` rxjs` 本身就具有很陡的学习曲线，所以较难上手。`useBusinessState` 则通过事件驱动来，相对来说更加简单,可以更快速上手。
 
 ## 核心概念
 
@@ -20,7 +20,7 @@
 
 ### 两个世界
 
-要理解 useBusiness 的设计你需要有两个“世界”的概念：业务世界与视图世界。
+要理解 `useBusinessState` 的设计你需要有两个“世界”的概念：业务世界与视图世界。
 
 ```
 
@@ -31,7 +31,7 @@
   +--------------------------------+
 
          +------------------+
-         |   useBusiness    |
+         | useBusinessState |
          +------------------+
 
   +--------------------------------+
@@ -130,7 +130,7 @@ export const Todos = (props: Props) => {
 
 ```ts
 import { useMemo } from 'react';
-import { useBusiness } from '@womk/react-hooks';
+import { useBusinessState } from '@womk/react-hooks';
 
 import { Business, add, remove, toggle } from './business';
 import { Todos } from './ui';
@@ -138,7 +138,7 @@ import { Todos } from './ui';
 export const App = () => {
   const business = React.useMemo(() => new Business(), []);
 
-  const todos = useBusiness(business, [add, remove, toggle], (b) =>
+  const todos = useBusinessState(business, [add, remove, toggle], (b) =>
     b.getState()
   );
 
@@ -159,7 +159,7 @@ Example: https://stackblitz.com/edit/react-ts-sjnpp3?file=app.tsx
 
 ## API
 
-### `useBusiness<R, A>(business: Business, events: Array<string>, getState: (business: Business, args: A) => R, args?: A)`
+### `useBusinessState<R, A>(business: Business, events: Array<string>, getState: (business: Business, args: A) => R, args?: A)`
 
 ### 参数
 
