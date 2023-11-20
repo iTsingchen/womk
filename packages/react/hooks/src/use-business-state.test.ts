@@ -1,6 +1,6 @@
 import { test, expect, vi } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import { useBusiness } from './use-business';
+import { useBusinessState } from './use-business-state';
 
 test('测试绑定事件', () => {
   const emitter = {
@@ -9,7 +9,7 @@ test('测试绑定事件', () => {
   };
 
   const hook = renderHook(
-    ({ b, events }) => useBusiness(b, events, () => null),
+    ({ b, events }) => useBusinessState(b, events, () => null),
     { initialProps: { b: emitter, events: ['add'] } },
   );
 
@@ -42,7 +42,7 @@ test('测试事件触发', () => {
   };
 
   const hook = renderHook(
-    ({ b, events }) => useBusiness(b, events, (m) => m.getState()),
+    ({ b, events }) => useBusinessState(b, events, (m) => m.getState()),
     { initialProps: { b: emitter, events: ['add'] } },
   );
 
@@ -63,7 +63,7 @@ test('测试多参数', () => {
 
   const hook = renderHook(
     ({ b, events, args }) =>
-      useBusiness(
+      useBusinessState(
         b,
         events,
         (m, [s1, s2]) => `${m.getState()}${s1}${s2}`,
@@ -127,7 +127,7 @@ test('测试 TODO 应用', () => {
   const business = new TodoBusiness();
 
   const hook = renderHook(
-    ({ b, events }) => useBusiness(b, events, (m) => m.getState()),
+    ({ b, events }) => useBusinessState(b, events, (m) => m.getState()),
     { initialProps: { b: business, events: ['add', 'delete'] } },
   );
 
