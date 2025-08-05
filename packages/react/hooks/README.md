@@ -1,4 +1,4 @@
-# useBusinessState
+# @womk/react-hooks
 
 ## 介绍
 
@@ -20,7 +20,7 @@
 
 ### 两个世界
 
-要理解 `useBusinessState` 的设计你需要有两个“世界”的概念：业务世界与视图世界。
+要理解 `useBusinessState` 的设计你需要有两个"世界"的概念：业务世界与视图世界。
 
 ```
 
@@ -62,7 +62,21 @@ npm
 npm install --save @womk/react-hooks
 ```
 
+## Hooks 概览
+
+本库提供了以下 React Hooks：
+
+- **useBusinessState** - 业务状态管理 Hook
+- **useBusinessEvent** - 业务事件监听 Hook
+- **usePrevious** - 获取前一个值的 Hook
+- **usePreviousDistinct** - 获取前一个不同值的 Hook
+- **useIdle** - 检测用户空闲状态的 Hook
+- **useIsomorphicEffect** - 同构 Effect Hook
+- **useBusiness** - 已废弃，请使用 useBusinessState
+
 ## 使用
+
+### useBusinessState
 
 第一步：创建业务逻辑
 
@@ -157,18 +171,365 @@ export const App = () => {
 
 Example: https://stackblitz.com/edit/react-ts-sjnpp3?file=app.tsx
 
+### useBusinessEvent
+
+用于监听业务事件，当指定事件触发时执行回调函数。
+
+```ts
+import { useBusinessEvent } from '@womk/react-hooks';
+
+function MyComponent({ business }) {
+  useBusinessEvent(business, ['userLogin', 'userLogout'], (emitter) => {
+    console.log('用户状态发生变化');
+  });
+
+  return <div>...</div>;
+}
+```
+
+### usePrevious
+
+获取前一个渲染周期的值。
+
+```ts
+import { usePrevious } from '@womk/react-hooks';
+
+function MyComponent({ count }) {
+  const previousCount = usePrevious(count);
+
+  return (
+    <div>
+      当前值: {count}
+      前一个值: {previousCount}
+    </div>
+  );
+}
+```
+
+### usePreviousDistinct
+
+获取前一个不同的值，支持自定义比较函数。
+
+```ts
+import { usePreviousDistinct } from '@womk/react-hooks';
+
+function MyComponent({ user }) {
+  // 只有当用户 ID 发生变化时才更新
+  const previousUser = usePreviousDistinct(
+    user,
+    (prev, next) => prev?.id === next?.id
+  );
+
+  return (
+    <div>
+      当前用户: {user.name}
+      前一个用户: {previousUser?.name}
+    </div>
+  );
+}
+```
+
+### useIdle
+
+检测用户是否处于空闲状态。
+
+```ts
+import { useIdle } from '@womk/react-hooks';
+
+function MyComponent() {
+  const isIdle = useIdle(30000); // 30秒无操作视为空闲
+
+  return (
+    <div>
+      {isIdle ? '用户处于空闲状态' : '用户正在操作'}
+    </div>
+  );
+}
+```
+
+### useIsomorphicEffect
+
+同构 Effect Hook，在服务端渲染时使用 useEffect，在客户端使用 useLayoutEffect。
+
+```ts
+import { useIsomorphicEffect } from '@womk/react-hooks';
+
+function MyComponent() {
+  useIsomorphicEffect(() => {
+    // 在客户端使用 useLayoutEffect，在服务端使用 useEffect
+    console.log('组件已挂载');
+  }, []);
+
+  return <div>...</div>;
+}
+```
+
 ## API
 
-### `useBusinessState<R, A>(business: Business, events: Array<string>, getState: (business: Business, args: A) => R, args?: A)`
+### `useBusinessState<E extends EventEmitter, R>(emitter: E, events: string[], evalFn: (emitter: E) => R): R`
 
-### 参数
+### `useBusinessState<E extends EventEmitter, A extends unknown[], R>(emitter: E, events: string[], evalFn: (emitter: E, args: [...A]) => R, args: [...A]): R`
 
-- business: 业务逻辑
-- events: 事件列表
-- getState: 获取状态
-- args: 可选的依赖参数列表，如果传入将会作为 getState 的第二个参数传入，args 的变化也会导致
-  getState 的重新执行
+#### 参数
 
-### 返回值
+- emitter: 事件发射器，必须实现 `on` 和 `off` 方法
+- events: 要监听的事件列表
+- evalFn: 状态计算函数，用于从 emitter 中获取当前状态
+- args: 可选的依赖参数列表，如果传入将会作为 evalFn 的第二个参数传入，args 的变化也会导致 evalFn 的重新执行
 
-返回值为 getState 的结果，每当 events 中的事件触发时，getState 会被调用，返回值会被更新。
+#### 返回值
+
+返回值为 evalFn 的结果，每当 events 中的事件触发时，evalFn 会被调用，返回值会被更新。使用 `fast-equals` 进行深度比较，避免不必要的重新渲染。
+
+#### 特性
+
+- 使用 `useSyncExternalStore` 确保状态同步
+- 自动进行深度比较，避免不必要的重新渲染
+- 支持依赖参数，当参数变化时重新计算状态
+
+### `useBusinessEvent<E extends EventEmitter, A extends unknown[]>(emitter: E, events: string[], listener: (emitter: E, args?: A) => void, args?: A)`
+
+#### 参数
+
+- emitter: 事件发射器
+- events: 要监听的事件列表
+- listener: 事件触发时的回调函数
+- args: 可选的参数，会传递给回调函数
+
+### `usePrevious<T>(state: T): T | undefined`
+
+#### 参数
+
+- state: 当前值
+
+#### 返回值
+
+返回前一个渲染周期的值，首次渲染时返回 undefined。
+
+### `usePreviousDistinct<T>(value: T, compare?: (prev: T | undefined, next: T) => boolean): T | undefined`
+
+#### 参数
+
+- value: 当前值
+- compare: 可选的比较函数，默认为严格相等比较
+
+#### 返回值
+
+返回前一个不同的值，首次渲染时返回 undefined。
+
+### `useIdle(ms: number, options?: UseIdleOptions): boolean`
+
+#### 参数
+
+- ms: 空闲超时时间（毫秒），支持超过 `2 ^ 31` 的时间值
+- options: 可选的配置对象
+  - events: 自定义要监听的事件列表，默认为 `['mousemove', 'mousedown', 'keydown', 'touchstart', 'wheel', 'resize']`
+
+#### 返回值
+
+返回布尔值，表示用户是否处于空闲状态。
+
+#### 示例
+
+```ts
+import { useIdle } from '@womk/react-hooks';
+
+function MyComponent() {
+  // 基本用法：30秒无操作视为空闲
+  const isIdle = useIdle(30000);
+
+  // 自定义事件监听
+  const isIdleCustom = useIdle(5000, {
+    events: ['mousemove', 'keydown', 'click']
+  });
+
+  return (
+    <div>
+      {isIdle ? '用户处于空闲状态' : '用户正在操作'}
+    </div>
+  );
+}
+```
+
+### `useIsomorphicEffect`
+
+同构版本的 useEffect，在服务端使用 useEffect，在客户端使用 useLayoutEffect。
+
+## 完整示例
+
+以下是一个综合使用多个 hooks 的完整示例：
+
+```tsx
+import React, { useMemo } from 'react';
+import {
+  useBusinessState,
+  useBusinessEvent,
+  usePrevious,
+  useIdle,
+  useIsomorphicEffect,
+} from '@womk/react-hooks';
+import EventEmitter from 'eventemitter3';
+
+// 业务逻辑
+class TodoBusiness extends EventEmitter {
+  private todos: Array<{ id: number; text: string; completed: boolean }> = [];
+  private nextId = 1;
+
+  add = (text: string) => {
+    this.todos = [...this.todos, { id: this.nextId++, text, completed: false }];
+    this.emit('todosChanged');
+  };
+
+  toggle = (id: number) => {
+    this.todos = this.todos.map((todo) =>
+      todo.id === id ? { ...todo, completed: !todo.completed } : todo,
+    );
+    this.emit('todosChanged');
+  };
+
+  remove = (id: number) => {
+    this.todos = this.todos.filter((todo) => todo.id !== id);
+    this.emit('todosChanged');
+  };
+
+  getTodos() {
+    return this.todos.slice();
+  }
+
+  getCompletedCount() {
+    return this.todos.filter((todo) => todo.completed).length;
+  }
+}
+
+// 组件
+function TodoApp() {
+  const business = useMemo(() => new TodoBusiness(), []);
+
+  // 使用 useBusinessState 获取状态
+  const todos = useBusinessState(business, ['todosChanged'], (b) =>
+    b.getTodos(),
+  );
+  const completedCount = useBusinessState(business, ['todosChanged'], (b) =>
+    b.getCompletedCount(),
+  );
+
+  // 使用 usePrevious 跟踪变化
+  const previousCompletedCount = usePrevious(completedCount);
+
+  // 使用 useIdle 检测用户空闲状态
+  const isIdle = useIdle(30000);
+
+  // 使用 useBusinessEvent 监听事件
+  useBusinessEvent(business, ['todosChanged'], (emitter) => {
+    console.log('待办事项已更新');
+  });
+
+  // 使用 useIsomorphicEffect 处理副作用
+  useIsomorphicEffect(() => {
+    if (
+      previousCompletedCount !== undefined &&
+      completedCount > previousCompletedCount
+    ) {
+      console.log(`完成了 ${completedCount - previousCompletedCount} 个任务！`);
+    }
+  }, [completedCount, previousCompletedCount]);
+
+  return (
+    <div className={isIdle ? 'idle' : 'active'}>
+      <h1>
+        待办事项 ({completedCount}/{todos.length})
+      </h1>
+
+      {isIdle && <div className="idle-notice">用户处于空闲状态</div>}
+
+      <ul>
+        {todos.map((todo) => (
+          <li key={todo.id}>
+            <input
+              type="checkbox"
+              checked={todo.completed}
+              onChange={() => business.toggle(todo.id)}
+            />
+            <span
+              style={{
+                textDecoration: todo.completed ? 'line-through' : 'none',
+              }}
+            >
+              {todo.text}
+            </span>
+            <button onClick={() => business.remove(todo.id)}>删除</button>
+          </li>
+        ))}
+      </ul>
+
+      <button onClick={() => business.add(`新任务 ${Date.now()}`)}>
+        添加任务
+      </button>
+    </div>
+  );
+}
+```
+
+## TypeScript 支持
+
+所有 hooks 都提供完整的 TypeScript 类型支持：
+
+```ts
+// EventEmitter 接口
+interface EventEmitter {
+  on: (type: string, listener: () => void) => void;
+  off: (type: string, listener: () => void) => void;
+}
+
+// useIdle 配置选项
+interface UseIdleOptions {
+  events?: string[];
+}
+
+// 业务逻辑示例
+class MyBusiness extends EventEmitter {
+  private state = { count: 0 };
+
+  increment() {
+    this.state.count++;
+    this.emit('countChanged');
+  }
+
+  getCount() {
+    return this.state.count;
+  }
+}
+```
+
+## 注意事项
+
+- `useBusiness` Hook 已被废弃，将在下一个主要版本中移除，请使用 `useBusinessState` 替代。
+- 所有 Hook 都遵循 React Hooks 的使用规则。
+- 在服务端渲染环境中，`useIsomorphicEffect` 会自动选择合适的 Effect Hook。
+- `useIdle` Hook 会自动处理页面可见性变化，当页面隐藏时不会触发空闲状态。
+- `useBusinessState` 使用深度比较来避免不必要的重新渲染，确保性能优化。
+- 所有 hooks 都支持 TypeScript，提供完整的类型推断和类型检查。
+
+## 贡献
+
+欢迎提交 Issue 和 Pull Request！
+
+### 开发环境设置
+
+```bash
+# 安装依赖
+pnpm install
+
+# 运行测试
+pnpm test
+
+# 运行类型检查
+pnpm type-check
+
+# 构建
+pnpm build
+```
+
+## 许可证
+
+MIT License
