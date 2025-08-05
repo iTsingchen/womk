@@ -1,3 +1,7 @@
 packages:
-  - 'configurations/*'
-  - 'packages/**'
+  - configurations/*
+  - packages/**
+
+ignoredBuiltDependencies:
+  - esbuild
+  - unrs-resolver
